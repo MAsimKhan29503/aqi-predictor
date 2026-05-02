@@ -1,4 +1,5 @@
 import os
+import platform
 import pandas as pd
 import numpy as np
 import joblib
@@ -7,8 +8,9 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 # Fix Windows path issue
-os.makedirs("C:\\tmp", exist_ok=True)
-os.makedirs("D:\\tmp", exist_ok=True)
+if platform.system() == "Windows":
+    os.makedirs("C:\\tmp", exist_ok=True)
+    os.makedirs("D:\\tmp", exist_ok=True)
 
 # ML Libraries
 from sklearn.ensemble import RandomForestRegressor
@@ -28,8 +30,10 @@ load_dotenv()
 # ── Config ────────────────────────────────────────────────────────────────────
 HOPSWORKS_API_KEY = os.getenv("HOPSWORKS_API_KEY")
 HOPSWORKS_PROJECT = os.getenv("HOPSWORKS_PROJECT")
-CERT_FOLDER       = "D:\\AQI_Predictor\\tmp"
-MODEL_DIR         = "D:\\AQI_Predictor\\aqi-predictor\\models"
+CERT_FOLDER = "D:\\AQI_Predictor\\tmp" if platform.system() == "Windows" else "/tmp"
+MODEL_DIR = os.path.normpath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "models")
+)
 
 os.makedirs(MODEL_DIR, exist_ok=True)
 

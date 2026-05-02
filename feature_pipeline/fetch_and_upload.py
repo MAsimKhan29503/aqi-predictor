@@ -1,12 +1,13 @@
 import os
+import platform
 
-
-
-# Fix Windows path issue - MUST be before hopsworks import
-os.environ["TMPDIR"] = "C:\\tmp"
-os.environ["TEMP"]   = "C:\\tmp"
-os.environ["TMP"]    = "C:\\tmp"
-
+# Fix path issue - works on both Windows and Linux
+if platform.system() == "Windows":
+    os.makedirs("C:\\tmp", exist_ok=True)
+    os.makedirs("D:\\tmp", exist_ok=True)
+    os.environ["TMPDIR"] = "C:\\tmp"
+    os.environ["TEMP"]   = "C:\\tmp"
+    os.environ["TMP"]    = "C:\\tmp"
 import requests
 import pandas as pd
 from datetime import datetime
@@ -142,7 +143,7 @@ def store_features(df):
     in a feature group called 'aqi_features'.
     """
     # Create cert folder in D drive
-    cert_folder = "D:\\AQI_Predictor\\tmp"
+    cert_folder = "D:\\AQI_Predictor\\tmp" if platform.system() == "Windows" else "/tmp"
     os.makedirs(cert_folder, exist_ok=True)
 
     print("[Hopsworks] Connecting to Feature Store...")
